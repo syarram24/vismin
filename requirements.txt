@@ -18,7 +18,7 @@ pandas==1.5.3
 ray==2.9.2
 scikit-learn==1.2.2
 #torch==2.1.2+cu118
-transformers @ git+https://github.com/huggingface/transformers@5fabebdb7d4f9ee5a6459f7c0dcde0b1901f6205
+transformers #@ git+https://github.com/huggingface/transformers@5fabebdb7d4f9ee5a6459f7c0dcde0b1901f6205
 uvicorn==0.22.0
 wandb==0.17.0
 xformers==0.0.23.post1
