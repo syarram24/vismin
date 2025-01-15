@@ -10,7 +10,7 @@ accelerate #@ git+https://github.com/huggingface/accelerate@c7e5e41b8c5c3378921f
 flair==0.12.2
 fastapi==0.98.0
 gradio==4.16.0
-huggingface-hub==0.24.5
+huggingface-hub
 img2dataset==1.41.0
 matplotlib==3.7.1
 numpy==1.24.2
