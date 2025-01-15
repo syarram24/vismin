@@ -7,7 +7,7 @@ accelerate #@ git+https://github.com/huggingface/accelerate@c7e5e41b8c5c3378921f
 #autoawq @ https://github.com/casper-hansen/AutoAWQ/releases/download/v0.2.4/autoawq-0.2.4+cu118-cp38-cp38-linux_x86_64.whl#sha256=c410bfc882bbdd59e2d6f232cc469d8ad55d718e0513dfc40734690ce9593d5b
 #diffusers==0.30.0
 flair==0.12.2
-fastapi==0.98.0
+fastapi
 gradio==4.16.0
 huggingface-hub
 img2dataset==1.41.0
