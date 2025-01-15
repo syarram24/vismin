@@ -1,6 +1,5 @@
 transformers==4.24.0
 diffusers
-huggingface-hub==0.10.1
 kornia==0.5.0
 albumentations==0.5.2
 absl-py==1.4.0
