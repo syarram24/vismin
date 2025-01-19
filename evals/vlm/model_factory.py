@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 # from .blip import BlipModel
 # from .blip2 import Blip2Model
-# from .clip import ClipModel
+from .clip import ClipModel
 # from .cogvlm import CogVLMModel
 # from .flava import FlavaModel
 # from .idefics2 import Idefics2Model
