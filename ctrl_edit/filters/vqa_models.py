@@ -8,10 +8,17 @@ import torch
 import torch.nn.functional as F
 from transformers import AutoModel, AutoTokenizer
 
-from commons.logger import Logger
 from evals.vlm.model_factory import ModelFactory
 
-logger = Logger.get_logger(__name__)
+# Set up logger
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 
 
