@@ -17,11 +17,32 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from torchvision.ops import box_convert
 from tqdm import tqdm
 
-from commons.constants import (COCO_DATA_DIR, MAIR_LAB_DATA_DIR,
-                               SYNTH_DIFFUSE_DATA_DIR, TOTAL_NUM_COCO_CHUNKS)
-from commons.logger import Logger
+# from commons.constants import (COCO_DATA_DIR, MAIR_LAB_DATA_DIR,
+#                                SYNTH_DIFFUSE_DATA_DIR, TOTAL_NUM_COCO_CHUNKS)
+# from commons.logger import Logger
+LANGUAGE_MODEL_NAMES = [
+    "mistralai/Mixtral-8x7B-Instruct-v0.1",
+    # "teknium/OpenHermes-2.5-Mistral-7B",
+    # "lmsys/vicuna-13b-v1.3",
+    # "eachadea/vicuna-13b-1.1"
+]
+SYNTH_DIFFUSE_DATA_DIR = "/mnt/localssd/vismin/data"
+SYNTH_ONLY_CATEGORIES = ["relation", "counting"]
+TOTAL_NUM_COCO_CHUNKS = 10
+COCO_DATA_DIR = "/mnt/localssd/coco"
+MAIR_LAB_DATA_DIR = "/mnt/localssd/mair_lab"
+VIM_DATA_DIR = "/mnt/localssd/vismin_processed_output"
 
-logger = Logger.get_logger(__name__)
+
+# Set up logger
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 def group_outputs_for_batch_repeats(
