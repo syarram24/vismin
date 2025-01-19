@@ -5,9 +5,28 @@ import re
 
 import torch
 
-from commons.constants import (LANGUAGE_MODEL_NAMES, SYNTH_DIFFUSE_DATA_DIR,
-                               SYNTH_ONLY_CATEGORIES, TOTAL_NUM_COCO_CHUNKS)
-from commons.logger import Logger
+# from commons.constants import (LANGUAGE_MODEL_NAMES, SYNTH_DIFFUSE_DATA_DIR,
+#                                SYNTH_ONLY_CATEGORIES, TOTAL_NUM_COCO_CHUNKS)
+# Constants previously imported from commons.constants
+LANGUAGE_MODEL_NAMES = [
+    "mistralai/Mixtral-8x7B-Instruct-v0.1",
+    # "teknium/OpenHermes-2.5-Mistral-7B",
+    # "lmsys/vicuna-13b-v1.3",
+    # "eachadea/vicuna-13b-1.1"
+]
+SYNTH_DIFFUSE_DATA_DIR = "/mnt/localssd/vismin/data"
+SYNTH_ONLY_CATEGORIES = ["relation", "counting"]
+TOTAL_NUM_COCO_CHUNKS = 10
+
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+# from commons.logger import Logger
 
 from ..llm_agent.edit_instructgen_llm import (EditInstructgenBootstrap,
                                               EditInstructgenFromCaption)
@@ -15,7 +34,7 @@ from ..utils.helpers import load_coco_captions, load_vsr_captions
 from ..utils.llm_utils import (DiffEditLLM, EditsGenLLM, GroundedLLM,
                                InstructPix2PixLLM)
 
-logger = Logger.get_logger(__name__)
+logger = logging.get_logger(__name__)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 random.seed(42)

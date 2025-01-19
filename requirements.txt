@@ -4,7 +4,8 @@ kornia
 albumentations
 absl-py
 accelerate @ git+https://github.com/huggingface/accelerate@c7e5e41b8c5c3378921f6f5241326abf8cd7d283
-autoawq @ https://github.com/casper-hansen/AutoAWQ/releases/download/v0.2.4/autoawq-0.2.4+cu118-cp38-cp38-linux_x86_64.whl#sha256=c410bfc882bbdd59e2d6f232cc469d8ad55d718e0513dfc40734690ce9593d5b
+#autoawq @ https://github.com/casper-hansen/AutoAWQ/releases/download/v0.2.4/autoawq-0.2.4+cu118-cp38-cp38-linux_x86_64.whl#sha256=c410bfc882bbdd59e2d6f232cc469d8ad55d718e0513dfc40734690ce9593d5b
+autoawq @   https://github.com/casper-hansen/AutoAWQ/releases/download/v0.2.7.post3/autoawq-0.2.7.post3-py3-none-any.whl
 diffusers==0.30.0
 flair
 fastapi
@@ -21,4 +22,6 @@ transformers @ git+https://github.com/huggingface/transformers@5fabebdb7d4f9ee5a
 uvicorn
 wandb
 #xformers==0.0.23.post1
+commons
+
 
