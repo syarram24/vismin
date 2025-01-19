@@ -25,7 +25,7 @@ from .llava import LlaVaModel
 
 # from commons.constants import GEMINI_API_KEY, OPENAI_API_KEY
 
-logger = Logger.get_logger(__name__)
+# logger = Logger.get_logger(__name__)
 
 
 class ModelFactory:
