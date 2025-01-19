@@ -4,7 +4,7 @@ import PIL
 import torch
 from transformers import LlavaNextForConditionalGeneration, LlavaNextProcessor
 
-from ..utils import get_combined_image
+# from ..utils import get_combined_image
 
 
 class LlaVaModel:
