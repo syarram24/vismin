@@ -13,14 +13,14 @@ logger = logging.getLogger(__name__)
 
 # from .blip import BlipModel
 # from .blip2 import Blip2Model
-from .clip import ClipModel
+# from .clip import ClipModel
 # from .cogvlm import CogVLMModel
 # from .flava import FlavaModel
 # from .idefics2 import Idefics2Model
 # from .internvl import InternVLModel
 from .llava import LlaVaModel
 # from .mantis import MantisModel
-from .siglip import SiglipModel
+# from .siglip import SiglipModel
 # from .vision_api import GeminiModel, GPT4VisionModel
 
 # from commons.constants import GEMINI_API_KEY, OPENAI_API_KEY
@@ -37,9 +37,9 @@ class ModelFactory:
         #"gemini": partial(GeminiModel, api_key=GEMINI_API_KEY),
         #"gpt-4-vision-preview": partial(GPT4VisionModel, api_key=OPENAI_API_KEY),
         #"HuggingFaceM4/idefics2-8b": partial(Idefics2Model, model_name_or_path="HuggingFaceM4/idefics2-8b"),
-        "TIGER-Lab/Mantis-8B-siglip-llama3": partial(
-            MantisModel, model_name_or_path="TIGER-Lab/Mantis-8B-siglip-llama3"
-        ),
+        # "TIGER-Lab/Mantis-8B-siglip-llama3": partial(
+        #     MantisModel, model_name_or_path="TIGER-Lab/Mantis-8B-siglip-llama3"
+        # ),
         "llava-hf/llava-v1.6-mistral-7b-hf": partial(
             LlaVaModel, model_name_or_path="llava-hf/llava-v1.6-mistral-7b-hf"
         ),
