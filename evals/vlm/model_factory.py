@@ -54,8 +54,8 @@ class ModelFactory:
         "ViT-L-14": partial(ClipModel, model_name="ViT-L-14"),
         #"facebook/flava-full": partial(FlavaModel, model_name="facebook/flava-full"),
         #"blip-coco-base": partial(BlipModel, model_name_or_path="blip-coco-base"),
-        "google/siglip-base-patch16-256": partial(SiglipModel, model_name="google/siglip-base-patch16-256"),
-        "google/siglip-large-patch16-384": partial(SiglipModel, model_name="google/siglip-large-patch16-384"),
+        #"google/siglip-base-patch16-256": partial(SiglipModel, model_name="google/siglip-base-patch16-256"),
+        #"google/siglip-large-patch16-384": partial(SiglipModel, model_name="google/siglip-large-patch16-384"),
     }
 
     SUPPORTED_MODELS = {**MLLM_MODELS, **CLIP_MODELS}
