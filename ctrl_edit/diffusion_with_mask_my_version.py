@@ -356,10 +356,10 @@ class ImageEditProcessor:
         self.dataset = dataset
         self.split = split
         self.chunk_index = chunk_index
-        self.generated_edit_instructions = self.load_cached_data("edit_instructions")
-        self.generated_edit_enhanced_phrases = self.load_cached_data("edit_enhanced_phrases")
-        self.generated_llm_filtered_edits = self.load_cached_data("llm_filtered_edits")
-        self.generated_qa_annotations = self.load_cached_data("qa_annotations")
+        # self.generated_edit_instructions = self.load_cached_data("edit_instructions")
+        # self.generated_edit_enhanced_phrases = self.load_cached_data("edit_enhanced_phrases")
+        # self.generated_llm_filtered_edits = self.load_cached_data("llm_filtered_edits")
+        # self.generated_qa_annotations = self.load_cached_data("qa_annotations")
 
     def load_cached_data(self, data_type):
         if data_type == "edit_instructions":
@@ -390,63 +390,63 @@ class ImageEditProcessor:
                 return {}  # TODO: remove this line if you want to raise an error instead
             raise FileNotFoundError(f"Could not find cached {data_type} file at {filepath}")
 
-    def get_edit_instruction(self, image_id, image_caption: str, annotation_file_path: str):
-        """
-        image_id: an input image id
-        image_caption: an input image caption
-        return:
-            edit_instructions: create a list of edit instructions
-        """
-        # take the intersection of (edit_instruct_llmgen_ids, edit_instruct_llmver_ids)
-        edit_instruct_llmgen_data = self.generated_edit_instructions.get(str(image_id), {}).get(image_caption)
-        edit_instruct_llmgen_ids = [item["edit_id"] for item in edit_instruct_llmgen_data]
-        edit_instruct_llmver_data = self.generated_llm_filtered_edits.get(str(image_id), {})
-        edit_instruct_llmver_ids = []
-        for edit_id, edit_info in edit_instruct_llmver_data.items():
-            if edit_info["reject"] == "NO":
-                edit_instruct_llmver_ids.append(edit_id)
-        logger.debug(f"LLM suggested outputs: {edit_instruct_llmgen_data}")
+    # def get_edit_instruction(self, image_id, image_caption: str, annotation_file_path: str):
+    #     """
+    #     image_id: an input image id
+    #     image_caption: an input image caption
+    #     return:
+    #         edit_instructions: create a list of edit instructions
+    #     """
+    #     # take the intersection of (edit_instruct_llmgen_ids, edit_instruct_llmver_ids)
+    #     edit_instruct_llmgen_data = self.generated_edit_instructions.get(str(image_id), {}).get(image_caption)
+    #     edit_instruct_llmgen_ids = [item["edit_id"] for item in edit_instruct_llmgen_data]
+    #     edit_instruct_llmver_data = self.generated_llm_filtered_edits.get(str(image_id), {})
+    #     edit_instruct_llmver_ids = []
+    #     for edit_id, edit_info in edit_instruct_llmver_data.items():
+    #         if edit_info["reject"] == "NO":
+    #             edit_instruct_llmver_ids.append(edit_id)
+    #     logger.debug(f"LLM suggested outputs: {edit_instruct_llmgen_data}")
 
-        valid_edit_ids_so_far = list(set(edit_instruct_llmgen_ids) & set(edit_instruct_llmver_ids))
-        llm_ver_rejected_cnt = len(edit_instruct_llmgen_ids) - len(valid_edit_ids_so_far)
-        print(
-            f"llm-gen: {edit_instruct_llmgen_ids}, llm-ver: {edit_instruct_llmver_ids}, valid: {valid_edit_ids_so_far}"
-        )
+    #     valid_edit_ids_so_far = list(set(edit_instruct_llmgen_ids) & set(edit_instruct_llmver_ids))
+    #     llm_ver_rejected_cnt = len(edit_instruct_llmgen_ids) - len(valid_edit_ids_so_far)
+    #     print(
+    #         f"llm-gen: {edit_instruct_llmgen_ids}, llm-ver: {edit_instruct_llmver_ids}, valid: {valid_edit_ids_so_far}"
+    #     )
 
-        # edit_instruct_llmgen_data after llmver
-        edit_instruct_remaning = [
-            item for item in edit_instruct_llmgen_data if item["edit_id"] in valid_edit_ids_so_far
-        ]
-        qa_avail_img_edit_ids = [
-            edit_id
-            for edit_id in valid_edit_ids_so_far
-            if edit_id in self.generated_qa_annotations.get(str(image_id), {})
-        ]
-        # edit_instruct_llmgen_data after llmver > qaann
-        edit_instruct_remaning = [item for item in edit_instruct_remaning if item["edit_id"] in qa_avail_img_edit_ids]
-        missing_qa_ann_cnt = len(valid_edit_ids_so_far) - len(edit_instruct_remaning)
+    #     # edit_instruct_llmgen_data after llmver
+    #     edit_instruct_remaning = [
+    #         item for item in edit_instruct_llmgen_data if item["edit_id"] in valid_edit_ids_so_far
+    #     ]
+    #     qa_avail_img_edit_ids = [
+    #         edit_id
+    #         for edit_id in valid_edit_ids_so_far
+    #         if edit_id in self.generated_qa_annotations.get(str(image_id), {})
+    #     ]
+    #     # edit_instruct_llmgen_data after llmver > qaann
+    #     edit_instruct_remaning = [item for item in edit_instruct_remaning if item["edit_id"] in qa_avail_img_edit_ids]
+    #     missing_qa_ann_cnt = len(valid_edit_ids_so_far) - len(edit_instruct_remaning)
 
-        # also make sure edit_ids are not already cached
-        already_in_imgen_cache_cnt = 0
-        if os.path.exists(annotation_file_path):
-            with open(annotation_file_path, "r") as f:
-                existing_annotations_dict = json.load(f)
-            cached_imgen_edit_ids = [item["edit_id"] for item in existing_annotations_dict.get("annotations", [])]
-            # edit_instruct_llmgen_data after llmver > qaann > imgen_cache
-            edit_instruct_remaning = [
-                item for item in edit_instruct_remaning if item["edit_id"] not in cached_imgen_edit_ids
-            ]
-            already_in_imgen_cache_cnt = len(cached_imgen_edit_ids)
+    #     # also make sure edit_ids are not already cached
+    #     already_in_imgen_cache_cnt = 0
+    #     if os.path.exists(annotation_file_path):
+    #         with open(annotation_file_path, "r") as f:
+    #             existing_annotations_dict = json.load(f)
+    #         cached_imgen_edit_ids = [item["edit_id"] for item in existing_annotations_dict.get("annotations", [])]
+    #         # edit_instruct_llmgen_data after llmver > qaann > imgen_cache
+    #         edit_instruct_remaning = [
+    #             item for item in edit_instruct_remaning if item["edit_id"] not in cached_imgen_edit_ids
+    #         ]
+    #         already_in_imgen_cache_cnt = len(cached_imgen_edit_ids)
 
-        # generated_outputs_filtered = [item for item in generated_outputs_filtered if "attribute" in item["category"]]
-        logger.info(
-            f"LLM edit instructions total: {len(edit_instruct_llmgen_data)}, "
-            f"LLM verification rejected total: {llm_ver_rejected_cnt}, "
-            f"Missing QA annotation: {missing_qa_ann_cnt}, "
-            f"Already found in imgen cache: {already_in_imgen_cache_cnt}, "
-            f"Remaining edit instructions: {len(edit_instruct_remaning)}"
-        )
-        return edit_instruct_remaning
+    #     # generated_outputs_filtered = [item for item in generated_outputs_filtered if "attribute" in item["category"]]
+    #     logger.info(
+    #         f"LLM edit instructions total: {len(edit_instruct_llmgen_data)}, "
+    #         f"LLM verification rejected total: {llm_ver_rejected_cnt}, "
+    #         f"Missing QA annotation: {missing_qa_ann_cnt}, "
+    #         f"Already found in imgen cache: {already_in_imgen_cache_cnt}, "
+    #         f"Remaining edit instructions: {len(edit_instruct_remaning)}"
+    #     )
+    #     return edit_instruct_remaning
 
     def image_diffusion_edit_and_rank(
         self, image_id: str, image_path: str, input_caption: str, edits_info: List[Dict[str, str]]
@@ -629,15 +629,62 @@ class ImageEditProcessor:
         ]
         logger.info(f"Total entries available for processing after filtering: {len(annotations)}")
 
+        #from datasets import load_dataset
+
+        # ds = load_dataset("/mnt/localssd/vismin")
+        # print(ds)
+    # import json
+    # from tqdm import tqdm
+    # coco_original_data = {}
+    # edited_object_data = {}
+    # for id_ in tqdm(range(len(ds['train']))):
+    #     sample = ds['train'][id_]
+    #     #print(sample)
+    #     filtered_sample = {
+    #         key: value for key, value in sample.items() 
+    #         if 'image' not in key.lower()  # Case-insensitive check for 'image' in key
+    #     }
+    #     if sample['category'] == '':
+    #         coco_original_data[sample['image_id']] = filtered_sample
+    #     elif sample['category'] == 'object':
+    #         edited_object_data[sample['source_image_id']] = filtered_sample
+            
+        
+    # with open('/mnt/localssd/coco_original_data.json', 'w', encoding='utf-8') as f:
+    #     json.dump(coco_original_data, f, indent=4, ensure_ascii=False) 
+
+    # with open('/mnt/localssd/edited_object_data.json', 'w', encoding='utf-8') as f:
+    #     json.dump(edited_object_data, f, indent=4, ensure_ascii=False) 
+    
+    # elif sample['category'] == 'object':
+    #     edited_object_data[sample['source_image_id']] = sample
+    #     break
+        with open('/mnt/localssd/coco_original_data.json', 'r', encoding='utf-8') as f:
+            coco_original_data = json.load(f)
+        with open('/mnt/localssd/edited_object_data.json', 'r', encoding='utf-8') as f:
+            edited_object_data = json.load(f)
+
+        print(coco_original_data)
+        print(edited_object_data)
+        # TODO: remove this 
         tot_processed, success_count = 0, 0
-        for idx, entry in tqdm(enumerate(annotations), desc="Editing images"):
-            image_id = entry["image_id"]
-            caption_text = entry["caption"]  # let's treat caption as prompt for stable-diffuser
-            if "image_path" in entry:
-                image_path = entry["image_path"]
-            else:
-                coco_split = "val" if self.split == "validation" else self.split
-                image_path = get_coco_path_by_image_id(split=coco_split, image_id=image_id)
+        # for idx, entry in tqdm(enumerate(annotations), desc="Editing images"):
+        #     image_id = entry["image_id"]
+        #     caption_text = entry["caption"]  # let's treat caption as prompt for stable-diffuser
+        #     if "image_path" in entry:
+        #         image_path = entry["image_path"]
+        #     else:
+        #         coco_split = "val" if self.split == "validation" else self.split
+        #         image_path = get_coco_path_by_image_id(split=coco_split, image_id=image_id)
+        #     logger.info(f"Processing image id: {image_id}, image caption: {caption_text}")
+        #     output_dir = self.get_output_dir_path_by_image_id(output_dir_root, image_id)
+        for idx, edited_obj_sample in tqdm(enumerate(edited_object_data), desc="Editing images") :
+            
+            #if sample['category'] == 'object':
+            image_id = edited_obj_sample['source_image_id']
+            caption_text = coco_original_data[image_id]['caption']
+            coco_split = "val" if self.split == "validation" else self.split
+            image_path = get_coco_path_by_image_id(split=coco_split, image_id=image_id)
             logger.info(f"Processing image id: {image_id}, image caption: {caption_text}")
             output_dir = self.get_output_dir_path_by_image_id(output_dir_root, image_id)
 
@@ -647,14 +694,23 @@ class ImageEditProcessor:
 
             annotation_file_path = os.path.join(output_dir, "annotations.json")
 
+            
             with self.file_locker.locked(output_dir) as lock_acquired:
                 if not lock_acquired:
                     logger.warning(f"Skipping image id: {image_id} as another process is working on it.")
                     continue
 
-                edits_info = self.get_edit_instruction(image_id, caption_text, annotation_file_path)
-                if not edits_info:
-                    continue
+                # edits_info = self.get_edit_instruction(image_id, caption_text, annotation_file_path)
+                # if not edits_info:
+                #     continue
+                # edits_info = ds['train'][0]
+                edited_object_data[image_id]
+                edits_info = {}
+                edits_info['input_phrase'] = edited_obj_sample['edit_instruction'][0]
+                edits_info['edited_phrase'] = edited_obj_sample['edit_instruction'][1]
+                edits_info['edited_caption'] = edited_obj_sample['caption']
+                edits_info['edit_id'] = edited_obj_sample['image_id']
+
 
                 logger.info(f"Processing IDX # {idx}")
                 logger.info(f"Original: {caption_text}, Edited: {edits_info}")
