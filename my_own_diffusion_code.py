@@ -106,7 +106,17 @@ def generate_grounding(dino_model, image, text_prompt, box_threshold=0.35, text_
     logger.info(f"no of boxes (post-filtering): {len(boxes_xyxy)}, phrases: {phrases}, boxes: {boxes_xyxy}")
     return boxes_xyxy, phrases
     
+def generate_masks_with_grounding(image: PIL.Image.Image, boxes_xyxy):
+    image_np = np.array(image)
+    h, w, _ = image_np.shape
+    boxes_unnorm = boxes_xyxy * np.array([w, h, w, h])
+    logger.debug(f"boxes: {boxes_xyxy} => boxes_unnorm: {boxes_unnorm}")
 
+    mask = np.zeros_like(image_np)
+    for box in boxes_unnorm:
+        x0, y0, x1, y1 = box
+        mask[int(y0) : int(y1), int(x0) : int(x1), :] = 255
+    return mask
 
 def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption: str, edits_info: List[Dict[str, str]]
                                   , device=None
@@ -154,15 +164,36 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
         if boxes is None or boxes.shape[0] == 0:
             continue
 
-    #     mask_image = self.diffuser.generate_masks_with_grounding(input_image, boxes)
-    #     image_data_list.append(
-    #         {
-    #             "mask_image": Image.fromarray(mask_image) if isinstance(mask_image, np.ndarray) else mask_image,
-    #             "boxes": boxes,
-    #             "edit_info": info,
-    #         }
-    #     )
-    # input_image = Image.fromarray(input_image) if isinstance(input_image, np.ndarray) else input_image
+        mask_image = generate_masks_with_grounding(input_image, boxes)
+        image_data_list.append(
+            {
+                "mask_image": Image.fromarray(mask_image) if isinstance(mask_image, np.ndarray) else mask_image,
+                "boxes": boxes,
+                "edit_info": info,
+            }
+        )
+        mask_image = image_data_list[0]["mask_image"]
+        
+        # Ensure both images are same size
+        input_size = input_image.size
+        mask_image = mask_image.resize(input_size)
+        
+        # Create new image with double width to hold both images
+        combined_image = Image.new('RGB', (input_size[0] * 2, input_size[1]))
+        
+        # Paste input image and mask side by side
+        combined_image.paste(input_image, (0, 0))
+        combined_image.paste(mask_image, (input_size[0], 0))
+        
+        # Save combined image
+        output_path = os.path.join(output_dir_root, f"input_and_mask_{image_id}.png")
+        combined_image.save(output_path)
+        logger.info(f"Saved combined input and mask image to {output_path}")
+
+    input_image = Image.fromarray(input_image) if isinstance(input_image, np.ndarray) else input_image
+    # Save input image and mask side by side
+    
+        
 
     
 device = "cuda" if torch.cuda.is_available() else "cpu"
