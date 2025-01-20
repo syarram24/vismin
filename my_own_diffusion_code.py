@@ -154,7 +154,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
     return:
         outputs: a list of dictionaries, each containing an edit instruction, a new caption, and a highest-scored generated image
     """
-    pipe = FluxFillPipeline.from_pretrained("black-forest-labs/FLUX.1-Fill-dev", torch_dtype=torch.bfloat16)
+    pipe = FluxFillPipeline.from_pretrained("black-forest-labs/FLUX.1-Fill-dev", torch_dtype=torch.bfloat16, use_auth_token=True).to(device)
     # Check if PyTorch version is 2.x
 
     # load grounding model
@@ -289,6 +289,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
                 num_inference_steps=50,
                 max_sequence_length=512,
                 generator=torch.Generator("cpu").manual_seed(0)
+                
             ).images
             #[
             # generated_images = sd_masked_inpainting(
