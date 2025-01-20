@@ -129,8 +129,8 @@ if __name__ == "__main__":
     if language_model_name in ["Mixtral-8x7B-Instruct-v0.1", "teknium/OpenHermes-2.5-Mistral-7B"]:
         language_model_name_str = "mistralaimixtral8x7binstructv0.1"
 
-    if dataset_name == "coco" and split == "train" and chunk_index is None:
-        raise ValueError("Chunk index is required for COCO train split.")
+    # if dataset_name == "coco" and split == "train" and chunk_index is None:
+    #     raise ValueError("Chunk index is required for COCO train split.")
 
     if chunk_index is not None:
         cache_fpath = os.path.join(
