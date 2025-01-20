@@ -23,6 +23,8 @@ from PIL import Image
 from torchvision.ops import box_convert
 from tqdm import tqdm
 from transformers import AutoProcessor, Kosmos2ForConditionalGeneration
+import ast
+
 
 import json
 import os
@@ -218,8 +220,9 @@ for idx, source_image_id in tqdm(enumerate(edited_object_data.keys()), desc="Edi
         # edits_info = ds['train'][0]
         edited_object_data[image_id]
         edits_info = {}
-        edits_info['input_phrase'] = list(edited_obj_sample['edit_instruction'])[0]
-        edits_info['edited_phrase'] = list(edited_obj_sample['edit_instruction'])[1]
+        list_rep = ast.literal_eval(edited_obj_sample['edit_instruction'])
+        edits_info['input_phrase'] = list_rep[0]
+        edits_info['edited_phrase'] = list_rep[1]
         edits_info['edited_caption'] = edited_obj_sample['caption']
         edits_info['edit_id'] = edited_obj_sample['image_id']
 
