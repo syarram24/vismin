@@ -295,23 +295,10 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
                 
             ).images
             print(f'generated_images {len(generated_images)} type {type(generated_images)}')
-            # Save generated images based on type
-            for idx, img in enumerate(generated_images):
-                if isinstance(img, torch.Tensor):
-                    # Convert tensor to PIL Image
-                    img = transforms.ToPILImage()(img.squeeze(0))
-                elif not isinstance(img, Image.Image):
-                    raise TypeError(f"Unexpected image type: {type(img)}")
-                
-                # Ensure img is in RGB mode
-                if img.mode != 'RGB':
-                    img = img.convert('RGB')
-                
-                generated_images[idx] = img
             # Save generated images to files
             for idx, img in enumerate(generated_images):
                 # Create output directory path using image_id
-                output_dir = get_output_dir_path_by_image_id(output_dir_root, image_id)
+                #output_dir = get_output_dir_path_by_image_id(output_dir_root, image_id)
                 
                 # Generate unique filename with timestamp
                 timestamp = int(time.time() * 1000)
