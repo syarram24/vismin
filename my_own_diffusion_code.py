@@ -174,10 +174,12 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
             }
         )
         mask_image = image_data_list[0]["mask_image"]
-        
+        print(f'mask_image: {mask_image.shape}')
         # Ensure both images are same size
         input_size = input_image.size
+        print(f'input_size: {input_size}')
         mask_image = mask_image.resize(input_size)
+        print(f'--> mask_image: {mask_image.shape}')
         
         # Create new image with double width to hold both images
         combined_image = Image.new('RGB', (input_size[0] * 2, input_size[1]))
