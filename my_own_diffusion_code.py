@@ -176,18 +176,18 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
         mask_image = image_data_list[0]["mask_image"]
         print(f'mask_image: {mask_image.size}')
         # Ensure both images are same size
-        input_size = input_image.size
-        print(f'input_size {input_size}')
+        width, height, _ = input_image.shape
+  
         # Create a new image combining input and mask side by side
-        combined_width = input_size[0] * 2  # Double the width to fit both images
-        combined_height = input_size[1]
+        combined_width = width * 2  # Double the width to fit both images
+        combined_height = height
         combined_image = Image.new('RGB', (combined_width, combined_height))
         
         # Paste input image on left side
         combined_image.paste(input_image, (0, 0))
         
         # Paste mask image on right side
-        combined_image.paste(mask_image, (input_size[0], 0))
+        combined_image.paste(mask_image, (width, 0))
         
         # Create output directory if it doesn't exist
         os.makedirs(output_dir, exist_ok=True)
