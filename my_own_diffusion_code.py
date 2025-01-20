@@ -181,17 +181,21 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
         #mask_image = mask_image.resize(input_size)
         print(f'--> mask_image: {mask_image.size}')
         
+        # Get dimensions from input image
+        height, width = input_image.shape[:2]  # Get dimensions from numpy array
+
         # Create new image with double width to hold both images
-        combined_image = Image.new('RGB', (input_size[0] * 2, input_size[1]))
-        
+        combined_image = Image.new('RGB', (width * 2, height))
+
         # Paste input image and mask side by side
         combined_image.paste(input_image, (0, 0))
-        combined_image.paste(mask_image, (input_size[0], 0))
-        
+        combined_image.paste(mask_image, (width, 0))
+
         # Save combined image
         output_path = os.path.join(output_dir_root, f"input_and_mask_{image_id}.png")
         combined_image.save(output_path)
         logger.info(f"Saved combined input and mask image to {output_path}")
+
 
     input_image = Image.fromarray(input_image) if isinstance(input_image, np.ndarray) else input_image
     # Save input image and mask side by side
