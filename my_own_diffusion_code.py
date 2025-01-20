@@ -140,6 +140,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
     for info in edits_info:
         try:
             grounding_phrase = info["input_phrase"]
+            print(f'grounding_phrase   {grounding_phrase}')
             boxes, phrases = generate_grounding(
                 dino_model, transformed_image, grounding_phrase, box_threshold=0.25, text_threshold=0.25
             )
@@ -217,13 +218,15 @@ for idx, source_image_id in tqdm(enumerate(edited_object_data.keys()), desc="Edi
         # edits_info = ds['train'][0]
         edited_object_data[image_id]
         edits_info = {}
-        edits_info['input_phrase'] = edited_obj_sample['edit_instruction'][0]
-        edits_info['edited_phrase'] = edited_obj_sample['edit_instruction'][1]
+        edits_info['input_phrase'] = list(edited_obj_sample['edit_instruction'])[0]
+        edits_info['edited_phrase'] = list(edited_obj_sample['edit_instruction'])[1]
         edits_info['edited_caption'] = edited_obj_sample['caption']
         edits_info['edit_id'] = edited_obj_sample['image_id']
 
+        print(f'edits_info: {edits_info}')
 
         logger.info(f"Processing IDX # {idx}")
         logger.info(f"Original: {caption_text}, Edited: {edits_info}")
 
         edited_image_list = image_diffusion_edit_and_rank(image_id, image_path, caption_text, [edits_info], device)
+        break
