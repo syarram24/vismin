@@ -721,7 +721,7 @@ class ImageEditProcessor:
                 logger.info(f"Processing IDX # {idx}")
                 logger.info(f"Original: {caption_text}, Edited: {edits_info}")
 
-                edited_image_list = self.image_diffusion_edit_and_rank(image_id, image_path, caption_text, edits_info)
+                edited_image_list = self.image_diffusion_edit_and_rank(image_id, image_path, caption_text, [edits_info])
                 if not edited_image_list:
                     logger.warning(f"No edited images generated for image id: {image_id}")
                     continue
