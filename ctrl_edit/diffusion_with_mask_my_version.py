@@ -682,6 +682,7 @@ class ImageEditProcessor:
             print(f'source_image_id: {source_image_id}')
             #if sample['category'] == 'object':
             edited_obj_sample = edited_object_data[source_image_id]
+            print(f'edited_obj_sample: {edited_obj_sample}')
             image_id = edited_obj_sample['source_image_id']
             caption_text = coco_original_data[image_id]['caption']
             coco_split = "val" if self.split == "validation" else self.split
