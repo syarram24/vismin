@@ -279,6 +279,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
                 "strength": strenth,
             }
             use_negative_prompt = random.choice([True, False])
+            print(f'input_images {len(input_images)} mask_images {len(mask_images)}')
             generated_images = pipe(
                 prompt=prompts,
                 image=input_images,
@@ -386,3 +387,25 @@ for idx, source_image_id in tqdm(enumerate(sorted(edited_object_data.keys())), d
 
         edited_image_list = image_diffusion_edit_and_rank(image_id, image_path, caption_text, [edits_info], device)
         break
+
+
+# import torch
+# from diffusers import FluxFillPipeline
+# from diffusers.utils import load_image
+
+# image = load_image("https://huggingface.co/datasets/diffusers/diffusers-images-docs/resolve/main/cup.png")
+# mask = load_image("https://huggingface.co/datasets/diffusers/diffusers-images-docs/resolve/main/cup_mask.png")
+
+# pipe = FluxFillPipeline.from_pretrained("black-forest-labs/FLUX.1-Fill-dev", torch_dtype=torch.bfloat16).to("cuda")
+# image = pipe(
+#     prompt="a white paper cup",
+#     image=image,
+#     mask_image=mask,
+#     height=1632,
+#     width=1232,
+#     guidance_scale=30,
+#     num_inference_steps=50,
+#     max_sequence_length=512,
+#     generator=torch.Generator("cpu").manual_seed(0)
+# ).images[0]
+# image.save(f"flux-fill-dev.png")
