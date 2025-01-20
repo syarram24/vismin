@@ -178,7 +178,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
         # Ensure both images are same size
         input_size = input_image.size
         print(f'input_size: {input_size}')
-        mask_image = mask_image.resize(input_size)
+        #mask_image = mask_image.resize(input_size)
         print(f'--> mask_image: {mask_image.size}')
         
         # Create new image with double width to hold both images
