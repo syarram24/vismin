@@ -664,8 +664,8 @@ class ImageEditProcessor:
         with open('/mnt/localssd/edited_object_data.json', 'r', encoding='utf-8') as f:
             edited_object_data = json.load(f)
 
-        print(coco_original_data)
-        print(edited_object_data)
+        #print(coco_original_data)
+        #print(edited_object_data)
         # TODO: remove this 
         tot_processed, success_count = 0, 0
         # for idx, entry in tqdm(enumerate(annotations), desc="Editing images"):
@@ -679,7 +679,7 @@ class ImageEditProcessor:
         #     logger.info(f"Processing image id: {image_id}, image caption: {caption_text}")
         #     output_dir = self.get_output_dir_path_by_image_id(output_dir_root, image_id)
         for idx, source_image_id in tqdm(enumerate(edited_object_data.keys()), desc="Editing images") :
-            
+            print(f'source_image_id: {source_image_id}')
             #if sample['category'] == 'object':
             edited_obj_sample = edited_object_data[source_image_id]
             image_id = edited_obj_sample['source_image_id']
