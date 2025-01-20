@@ -700,11 +700,11 @@ class ImageEditProcessor:
 
             annotation_file_path = os.path.join(output_dir, "annotations.json")
 
-            
-            with self.file_locker.locked(output_dir) as lock_acquired:
-                if not lock_acquired:
-                    logger.warning(f"Skipping image id: {image_id} as another process is working on it.")
-                    continue
+            if True:
+                # with self.file_locker.locked(output_dir) as lock_acquired:
+                #     if not lock_acquired:
+                #         logger.warning(f"Skipping image id: {image_id} as another process is working on it.")
+                #         continue
 
                 # edits_info = self.get_edit_instruction(image_id, caption_text, annotation_file_path)
                 # if not edits_info:
