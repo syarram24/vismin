@@ -178,24 +178,20 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
         # Ensure both images are same size
         width, height, _ = input_image.shape
   
-        # Create a new image combining input and mask side by side
-        combined_width = width * 2  # Double the width to fit both images
-        combined_height = height
-        combined_image = Image.new('RGB', (combined_width, combined_height))
-        
-        # Paste input image on left side
-        combined_image.paste(input_image, (0, 0))
-        
-        # Paste mask image on right side
-        combined_image.paste(mask_image, (width, 0))
-        
+        # Convert PIL images to numpy arrays if needed
+        input_np = np.array(input_image) if isinstance(input_image, PIL.Image.Image) else input_image
+        mask_np = np.array(mask_image) if isinstance(mask_image, PIL.Image.Image) else mask_image
+
+        # Create a combined image by placing input and mask side by side
+        combined_image = np.hstack((input_np, mask_np))
+
         # Create output directory if it doesn't exist
         os.makedirs(output_dir, exist_ok=True)
         
-        # Save combined image
-        output_path = os.path.join(output_dir, f"input_and_mask_combined.png")
-        combined_image.save(output_path)
-        logger.info(f"Saved combined input and mask image to: {output_path}")
+        # Save the combined image
+        output_path = os.path.join(output_dir, f"input_and_mask.png")
+        cv2.imwrite(output_path, cv2.cvtColor(combined_image, cv2.COLOR_RGB2BGR))
+        logger.info(f"Saved combined input and mask image to {output_path}")
 
 
 
