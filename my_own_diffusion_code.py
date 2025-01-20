@@ -26,7 +26,7 @@ from torchvision.ops import box_convert
 from tqdm import tqdm
 from transformers import AutoProcessor, Kosmos2ForConditionalGeneration
 import ast
-
+import torchvision.transforms as transforms
 
 import json
 import os
@@ -293,6 +293,20 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
                 generator=torch.Generator("cpu").manual_seed(0)
                 
             ).images
+            print(f'generated_images {len(generated_images)} type {type(generated_images)}')
+            # Save generated images based on type
+            for idx, img in enumerate(generated_images):
+                if isinstance(img, torch.Tensor):
+                    # Convert tensor to PIL Image
+                    img = transforms.ToPILImage()(img.squeeze(0))
+                elif not isinstance(img, Image.Image):
+                    raise TypeError(f"Unexpected image type: {type(img)}")
+                
+                # Ensure img is in RGB mode
+                if img.mode != 'RGB':
+                    img = img.convert('RGB')
+                
+                generated_images[idx] = img
             #[
             # generated_images = sd_masked_inpainting(
             #     pipe=pipe,
