@@ -648,16 +648,17 @@ class ImageEditProcessor:
         #         coco_original_data[sample['image_id']] = filtered_sample
         #     elif sample['category'] == 'object':
         #         edited_object_data[sample['source_image_id']] = filtered_sample
+        #     if id_ == 100: 
+        #         break
 
-
-    
             
-        
-    # with open('/mnt/localssd/coco_original_data.json', 'w', encoding='utf-8') as f:
-    #     json.dump(coco_original_data, f, indent=4, ensure_ascii=False) 
+                    
+                
+        # with open('/mnt/localssd/coco_original_data.json', 'w', encoding='utf-8') as f:
+        #     json.dump(coco_original_data, f, indent=4, ensure_ascii=False) 
 
-    # with open('/mnt/localssd/edited_object_data.json', 'w', encoding='utf-8') as f:
-    #     json.dump(edited_object_data, f, indent=4, ensure_ascii=False) 
+        # with open('/mnt/localssd/edited_object_data.json', 'w', encoding='utf-8') as f:
+        #     json.dump(edited_object_data, f, indent=4, ensure_ascii=False) 
     
     # elif sample['category'] == 'object':
     #     edited_object_data[sample['source_image_id']] = sample
