@@ -118,6 +118,31 @@ def generate_masks_with_grounding(image: PIL.Image.Image, boxes_xyxy):
         mask[int(y0) : int(y1), int(x0) : int(x1), :] = 255
     return mask
 
+def sd_masked_inpainting(
+    pipe,
+    prompt: Union[str, List[str]] = None,
+    image: Union[torch.FloatTensor, PIL.Image.Image] = None,
+    mask_image: Union[torch.FloatTensor, PIL.Image.Image] = None,
+    negative_prompt: Optional[Union[str, List[str]]] = None,
+    num_inference_steps: int = None,
+    guidance_scale: float = None,
+    num_images_per_prompt: int = None,
+    strength: float = None,
+):
+    image_inpainting = pipe(
+        prompt=prompt,
+        image=image,
+        mask_image=mask_image,
+        negative_prompt=negative_prompt,
+        num_inference_steps=num_inference_steps,
+        guidance_scale=guidance_scale,
+        num_images_per_prompt=num_images_per_prompt,
+        strength=strength,
+        output_type="pil",
+    ).images
+
+    return image_inpainting
+
 def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption: str, edits_info: List[Dict[str, str]]
                                   , device=None
 ):
@@ -127,6 +152,16 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
     return:
         outputs: a list of dictionaries, each containing an edit instruction, a new caption, and a highest-scored generated image
     """
+    pipe = AutoPipelineForInpainting.from_pretrained(
+                "diffusers/stable-diffusion-xl-1.0-inpainting-0.1",
+                torch_dtype=torch.float16,
+                variant="fp16",
+    )
+    # Check if PyTorch version is 2.x
+    if int(torch.__version__.split(".")[0]) >= 2:
+        pipe.unet = torch.compile(pipe.unet, mode="reduce-overhead", fullgraph=True)
+
+    # load grounding model
     ckpt_repo_id = "ShilongLiu/GroundingDINO"
     ckpt_filename = "groundingdino_swint_ogc.pth"
     ckpt_config_filename = "GroundingDINO_SwinT_OGC.cfg.py"
@@ -193,10 +228,82 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
         cv2.imwrite(output_path, cv2.cvtColor(combined_image, cv2.COLOR_RGB2BGR))
         logger.info(f"Saved combined input and mask image to {output_path}")
 
+    
+
 
 
     input_image = Image.fromarray(input_image) if isinstance(input_image, np.ndarray) else input_image
-    # Save input image and mask side by side
+
+    if not image_data_list:
+        logger.warning(f"Could not generate grounding for image id: {image_path}, caption: {input_caption}")
+        return []
+
+    # Image generation for each engine
+    for data in image_data_list:
+        info = data["edit_info"]
+        config = {
+            "scheduled_sampling_beta": random.choice([x / 10 for x in range(5, 11)]),
+            "num_inference_steps": random.choice(range(50, 100, 5)),
+            "guidance_scale": random.choice(np.arange(5, 12, 1.5).tolist()),
+        }
+        use_negative_prompt = random.choice([True, False])
+
+    # Batch processing for engines like 'sdxl'
+    batch_size = 1
+    for i in range(0, len(image_data_list), batch_size):
+        batch_data = image_data_list[i : i + batch_size]
+        input_images = [input_image.resize((1024, 1024)) for _ in batch_data]
+        mask_images = [data["mask_image"].resize((1024, 1024)) for data in batch_data]
+
+        prompts = []
+        for data in batch_data:
+            edited_phrase = data["edit_info"]["edited_phrase"]
+            edit_id = data["edit_info"]["edit_id"]
+            # conditionally add enhanced phrases if they exist to the prompt
+            # enhanced_phrases = self.generated_edit_enhanced_phrases.get(str(image_id), {}).get(edit_id, [])
+            # if isinstance(enhanced_phrases, list) and all(isinstance(item, str) for item in enhanced_phrases):
+            #     enhanced_phrases_str = ", ".join(enhanced_phrases[:3])
+            #     logger.info(f"{edited_phrase} => enhanced phrases: {enhanced_phrases_str}")
+            #     edited_phrase = edited_phrase + ", " + enhanced_phrases_str if enhanced_phrases else edited_phrase
+            prompts.append(edited_phrase + ". " + data["edit_info"]["edited_caption"])
+            strenth = 0.99
+
+        print(f'prompts: {prompts}')
+        REPEAT = 2
+        generated_images_batch = []
+        for _ in range(REPEAT):
+            num_inference_steps = (
+                random.choice(range(20, 50, 5))
+                # if self.diffuser.diffusion_model_name == "sdxl"
+                # else random.choice(range(35, 75, 5))
+            )
+            config = {
+                "num_inference_steps": num_inference_steps,
+                "guidance_scale": random.choice(np.arange(5, 12, 1.5).tolist()),
+                "strength": strenth,
+            }
+            use_negative_prompt = random.choice([True, False])
+            generated_images = sd_masked_inpainting(
+                prompt=prompts,
+                image=input_images,
+                mask_image=mask_images,
+                negative_prompt=[negative_prompt] * len(prompts) if use_negative_prompt else None,
+                **config,
+                num_images_per_prompt=num_images_per_prompt,
+            )
+            generated_images_batch.extend(generated_images)
+        # generated_images_batch = group_outputs_for_batch_repeats(
+        #     generated_images_batch, batch_size, REPEAT, num_images_per_prompt
+        # )
+
+        # for data in batch_data:
+        #     data.update(
+        #         generated_images=generated_images_batch.pop(0),
+        #         use_negative_prompt=use_negative_prompt,
+        #         **config,
+        #     )
+        # assert len(generated_images_batch) == 0, "generated_images should be empty"
+
     
         
 
