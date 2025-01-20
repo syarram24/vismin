@@ -163,8 +163,9 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
 
         # if boxes is None or boxes.shape[0] == 0:
         #     continue
-
+        print(f'input_image: {input_image.shape}')
         mask_image = generate_masks_with_grounding(input_image, boxes)
+        print(f'mask_image: {mask_image.shape}')
         image_data_list.append(
             {
                 "mask_image": Image.fromarray(mask_image) if isinstance(mask_image, np.ndarray) else mask_image,
