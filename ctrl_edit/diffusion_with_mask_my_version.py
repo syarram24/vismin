@@ -471,6 +471,7 @@ class ImageEditProcessor:
 
         input_image, transformed_image = load_image(image_path)
 
+        print(f'before grounding ..')
         image_data_list = []
         # Generate grounding and prepare image data
         for info in edits_info:
@@ -523,14 +524,15 @@ class ImageEditProcessor:
                 edited_phrase = data["edit_info"]["edited_phrase"]
                 edit_id = data["edit_info"]["edit_id"]
                 # conditionally add enhanced phrases if they exist to the prompt
-                enhanced_phrases = self.generated_edit_enhanced_phrases.get(str(image_id), {}).get(edit_id, [])
-                if isinstance(enhanced_phrases, list) and all(isinstance(item, str) for item in enhanced_phrases):
-                    enhanced_phrases_str = ", ".join(enhanced_phrases[:3])
-                    logger.info(f"{edited_phrase} => enhanced phrases: {enhanced_phrases_str}")
-                    edited_phrase = edited_phrase + ", " + enhanced_phrases_str if enhanced_phrases else edited_phrase
+                # enhanced_phrases = self.generated_edit_enhanced_phrases.get(str(image_id), {}).get(edit_id, [])
+                # if isinstance(enhanced_phrases, list) and all(isinstance(item, str) for item in enhanced_phrases):
+                #     enhanced_phrases_str = ", ".join(enhanced_phrases[:3])
+                #     logger.info(f"{edited_phrase} => enhanced phrases: {enhanced_phrases_str}")
+                #     edited_phrase = edited_phrase + ", " + enhanced_phrases_str if enhanced_phrases else edited_phrase
                 prompts.append(edited_phrase + ". " + data["edit_info"]["edited_caption"])
                 strenth = 0.99
 
+            print(f'prompts: {prompts}')
             REPEAT = 2
             generated_images_batch = []
             for _ in range(REPEAT):

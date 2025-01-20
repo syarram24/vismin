@@ -13,11 +13,58 @@ from typing import List
 import torch
 from tqdm import tqdm
 
-from commons.constants import (LANGUAGE_MODEL_NAMES,
-                               MISTRALAI_LANGUAGE_MODEL_NAMES,
-                               SYNTH_DIFFUSE_DATA_DIR, TOTAL_NUM_COCO_CHUNKS,
-                               VALID_SPATIAL_DIRECTIONS)
-from commons.logger import Logger
+# from commons.constants import (LANGUAGE_MODEL_NAMES,
+#                                MISTRALAI_LANGUAGE_MODEL_NAMES,
+#                                SYNTH_DIFFUSE_DATA_DIR, TOTAL_NUM_COCO_CHUNKS,
+#                                VALID_SPATIAL_DIRECTIONS)
+# Constants specifically for LLM operations
+LANGUAGE_MODEL_NAMES = [
+    "gpt-3.5-turbo",
+    "gpt-4",
+    "claude-2"
+]
+
+MISTRALAI_LANGUAGE_MODEL_NAMES = [
+    "mistral-tiny",
+    "mistral-small",
+    "mistral-medium",
+    "mistral-large"
+]
+
+# Data directory constants
+SYNTH_DIFFUSE_DATA_DIR = "data/synthetic_diffusion"
+
+SYNTH_ONLY_CATEGORIES = ["relation", "counting"]
+
+# COCO dataset constants
+TOTAL_NUM_COCO_CHUNKS = 10
+
+# Valid categories
+VALID_CATEGORY_NAMES = [
+    "person", "vehicle", "outdoor", "animal",
+    "accessory", "sports", "kitchen", "food",
+    "furniture", "electronic", "appliance", "indoor"
+] 
+
+VALID_SPATIAL_DIRECTIONS = ["left", "right", "top", "bottom", "below", "above", "under"]
+
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+# from evals.vlm.openai_client import OpenAIGPT
+
+from ..utils.helpers import (copy_current_cache_file_as_backup_json,
+                             load_t2icompbench,
+                             remove_duplicate_dict_entries_by_key)
+from ..utils.llm_utils import BaseLLM
+
+logger = logging.getLogger(__name__)
+
 from tifa.tifascore import UnifiedQAModel, filter_question_and_answers
 
 from ..utils.helpers import (copy_current_cache_file_as_backup_json,
@@ -29,8 +76,6 @@ from ..utils.spatial_relation_utils import \
     extract_spatial_direction_from_caption
 from ..utils.vqa_utils import (OBJECT_ABSENT_PROMPT, OBJECT_COUNT_PROMPT,
                                OBJECT_EXIST_ABSENT_PROMPT)
-
-logger = Logger.get_logger(__name__)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 set_random_seed()
@@ -619,7 +664,8 @@ if __name__ == "__main__":
     annotations = load_json_data(input_fpath)
     qa_gen_engine.load_pretrained_model_tokenizer()
     if dataset in ["coco", "vsr"]:
-        llm_filtered_edits = qa_gen_engine.load_cached_llm_filtered_edits_by_chunk_index(dataset, split, chunk_index)
+        #llm_filtered_edits = qa_gen_engine.load_cached_llm_filtered_edits_by_chunk_index(dataset, split, chunk_index)
         qa_gen_engine.generate_qa_from_edit_annotations(annotations, llm_filtered_edits, batch_size)
+    
     elif dataset in ["relation", "counting"]:
         qa_gen_engine.generate_qa_from_llm_layout_annotations(annotations, batch_size)
