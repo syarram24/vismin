@@ -30,7 +30,7 @@ SYNTH_DIFFUSE_DATA_DIR = "/mnt/localssd/vismin/data"
 SYNTH_ONLY_CATEGORIES = ["relation", "counting"]
 TOTAL_NUM_COCO_CHUNKS = 10
 COCO_DATA_DIR = "/mnt/localssd/coco"
-MAIR_LAB_DATA_DIR = "/mnt/localssd/coco"
+MAIR_LAB_DATA_DIR = "/mnt/localssd"
 VIM_DATA_DIR = "/mnt/localssd/vismin_processed_output"
 
 
