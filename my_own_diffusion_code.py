@@ -281,6 +281,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
             use_negative_prompt = random.choice([True, False])
             print(device)
             print(f'input_images {len(input_images)} mask_images {len(mask_images)}')
+            print(f'prompts {prompts}')
             generated_images = pipe(
                 prompt=prompts,
                 image=input_images,
@@ -307,6 +308,22 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
                     img = img.convert('RGB')
                 
                 generated_images[idx] = img
+            # Save generated images to files
+            for idx, img in enumerate(generated_images):
+                # Create output directory path using image_id
+                output_dir = get_output_dir_path_by_image_id(output_dir_root, image_id)
+                
+                # Generate unique filename with timestamp
+                timestamp = int(time.time() * 1000)
+                output_filename = f"generated_{prompts[idx]}_{idx}.png"
+                output_path = os.path.join(output_dir, output_filename)
+                
+                try:
+                    # Save the image
+                    img.save(output_path)
+                    logger.info(f"Saved generated image to {output_path}")
+                except Exception as e:
+                    logger.error(f"Error saving image {idx} to {output_path}: {e}")
             #[
             # generated_images = sd_masked_inpainting(
             #     pipe=pipe,
