@@ -11,7 +11,9 @@ import cv2
 import numpy as np
 import PIL
 import torch
-from diffusers import AutoPipelineForInpainting, StableDiffusionInpaintPipeline
+#from diffusers import AutoPipelineForInpainting, StableDiffusionInpaintPipeline
+from diffusers import FluxFillPipeline
+
 # from diffusers import FluxFillPipeline
 from groundingdino.models import build_model
 from groundingdino.util.inference import (annotate, load_image, load_model,
@@ -152,14 +154,8 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
     return:
         outputs: a list of dictionaries, each containing an edit instruction, a new caption, and a highest-scored generated image
     """
-    pipe = AutoPipelineForInpainting.from_pretrained(
-                "diffusers/stable-diffusion-xl-1.0-inpainting-0.1",
-                torch_dtype=torch.float32,
-                variant="fp16",
-    )
+    pipe = FluxFillPipeline.from_pretrained("black-forest-labs/FLUX.1-Fill-dev", torch_dtype=torch.bfloat16)
     # Check if PyTorch version is 2.x
-    if int(torch.__version__.split(".")[0]) >= 2:
-        pipe.unet = torch.compile(pipe.unet, mode="reduce-overhead", fullgraph=True)
 
     # load grounding model
     ckpt_repo_id = "ShilongLiu/GroundingDINO"
@@ -283,15 +279,27 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
                 "strength": strenth,
             }
             use_negative_prompt = random.choice([True, False])
-            generated_images = sd_masked_inpainting(
-                pipe=pipe,
+            generated_images = pipe(
                 prompt=prompts,
                 image=input_images,
                 mask_image=mask_images,
-                negative_prompt=[negative_prompt] * len(prompts) if use_negative_prompt else None,
-                **config,
-                num_images_per_prompt=num_images_per_prompt,
-            )
+                height=1632,
+                width=1232,
+                guidance_scale=30,
+                num_inference_steps=50,
+                max_sequence_length=512,
+                generator=torch.Generator("cpu").manual_seed(0)
+            ).images
+            #[
+            # generated_images = sd_masked_inpainting(
+            #     pipe=pipe,
+            #     prompt=prompts,
+            #     image=input_images,
+            #     mask_image=mask_images,
+            #     negative_prompt=[negative_prompt] * len(prompts) if use_negative_prompt else None,
+            #     **config,
+            #     num_images_per_prompt=num_images_per_prompt,
+            # )
             generated_images_batch.extend(generated_images)
         # generated_images_batch = group_outputs_for_batch_repeats(
         #     generated_images_batch, batch_size, REPEAT, num_images_per_prompt
