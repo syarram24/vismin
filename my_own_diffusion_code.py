@@ -155,7 +155,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
     pipe = AutoPipelineForInpainting.from_pretrained(
                 "diffusers/stable-diffusion-xl-1.0-inpainting-0.1",
                 torch_dtype=torch.float32,
-                variant="fp32",
+                variant="fp16",
     )
     # Check if PyTorch version is 2.x
     if int(torch.__version__.split(".")[0]) >= 2:
