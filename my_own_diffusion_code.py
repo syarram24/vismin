@@ -284,6 +284,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
             }
             use_negative_prompt = random.choice([True, False])
             generated_images = sd_masked_inpainting(
+                pipe=pipe,
                 prompt=prompts,
                 image=input_images,
                 mask_image=mask_images,
