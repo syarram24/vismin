@@ -84,7 +84,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--prompt_type",
         type=str,
-        default="edit_instructgen_from_caption",
+        default="instruct_pix2pix", #edit_instructgen_from_caption",
         help=f"Type of prompt to use. Possible values: instruct_pix2pix. Each choice represents a different strategy for generating prompts.",
     )
     parser.add_argument(
