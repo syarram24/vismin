@@ -730,9 +730,9 @@ if __name__ == "__main__":
 
     # load coco annotations from filepath `captions_train_2014.json`
     if args.dataset == "coco":
-        if split == "train" and chunk_index is None:
-            raise ValueError("Chunk index must be provided for processing the training split of COCO dataset.")
-        annotations = load_coco_captions(split=split, chunk_index=chunk_index)
+        # if split == "train" and chunk_index is None:
+        #     raise ValueError("Chunk index must be provided for processing the training split of COCO dataset.")
+        annotations = load_coco_captions(split=split) #, chunk_index=chunk_index)
         random.shuffle(annotations)
 
     elif args.dataset == "vsr":
