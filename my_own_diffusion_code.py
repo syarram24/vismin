@@ -279,6 +279,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
                 "strength": strenth,
             }
             use_negative_prompt = random.choice([True, False])
+            print(device)
             print(f'input_images {len(input_images)} mask_images {len(mask_images)}')
             generated_images = pipe(
                 prompt=prompts,
