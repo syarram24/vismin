@@ -25,7 +25,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 
-from evals.vlm.openai_client import OpenAIGPT
+# from evals.vlm.openai_client import OpenAIGPT
 
 from ..utils.helpers import (copy_current_cache_file_as_backup_json,
                              load_t2icompbench,
@@ -196,7 +196,7 @@ class EditInstructgenFromCaption(EditInstructionGenerator):
 
         prompt_batch = []
         image_ids_batch = []
-        openai = OpenAIGPT()
+        # openai = OpenAIGPT()
 
         def process_batch_openai():
             if dataset == "vsr":
