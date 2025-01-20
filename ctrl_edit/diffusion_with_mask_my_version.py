@@ -622,12 +622,12 @@ class ImageEditProcessor:
         diffuser: a diffuser object
         """
         logger.info(f"Total entries available for processing: {len(annotations)}")
-        annotations = [
-            entry
-            for entry in annotations
-            if self.generated_edit_instructions.get(str(entry["image_id"]), {}).get(entry["caption"])
-        ]
-        logger.info(f"Total entries available for processing after filtering: {len(annotations)}")
+        # annotations = [
+        #     entry
+        #     for entry in annotations
+        #     if self.generated_edit_instructions.get(str(entry["image_id"]), {}).get(entry["caption"])
+        # ]
+        #logger.info(f"Total entries available for processing after filtering: {len(annotations)}")
 
         #from datasets import load_dataset
 
