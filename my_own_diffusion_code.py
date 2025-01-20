@@ -226,7 +226,7 @@ tot_processed, success_count = 0, 0
 #         image_path = get_coco_path_by_image_id(split=coco_split, image_id=image_id)
 #     logger.info(f"Processing image id: {image_id}, image caption: {caption_text}")
 #     output_dir = self.get_output_dir_path_by_image_id(output_dir_root, image_id)
-for idx, source_image_id in tqdm(enumerate(edited_object_data.keys()), desc="Editing images") :
+for idx, source_image_id in tqdm(enumerate(sorted(edited_object_data.keys())), desc="Editing images") :
     print(f'source_image_id: {source_image_id}')
     #if sample['category'] == 'object':
     edited_obj_sample = edited_object_data[source_image_id]
