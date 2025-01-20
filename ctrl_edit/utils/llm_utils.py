@@ -11,10 +11,18 @@ import torch
 from transformers import (AutoModelForCausalLM, AutoTokenizer,
                           BitsAndBytesConfig)
 
-from commons.constants import (COCO_ONLY_CATEGORIES,
-                               MISTRALAI_LANGUAGE_MODEL_NAMES,
-                               SYNTH_DIFFUSE_DATA_DIR,
-                               VALID_SPATIAL_DIRECTIONS)
+# from commons.constants import (COCO_ONLY_CATEGORIES,
+#                                MISTRALAI_LANGUAGE_MODEL_NAMES,
+#                                SYNTH_DIFFUSE_DATA_DIR,
+#                                VALID_SPATIAL_DIRECTIONS)
+MISTRALAI_LANGUAGE_MODEL_NAMES = [
+    "mistral-tiny",
+    "mistral-small",
+    "mistral-medium",
+    "mistral-large"
+]
+VALID_SPATIAL_DIRECTIONS = ["left", "right", "top", "bottom", "below", "above", "under"]
+
 # Set up logger
 import logging
 
