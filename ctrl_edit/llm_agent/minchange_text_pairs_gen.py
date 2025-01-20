@@ -50,6 +50,7 @@ def create_llm_agent(model_key, language_model_name, prompt_type, device):
         "sdedit": InstructPix2PixLLM,
     }
 
+    print(f'model_key {model_key}')
     ModelClass = model_map.get(model_key)
 
     # Special case for hive and sdedit
