@@ -32,7 +32,7 @@ from ..utils.helpers import (copy_current_cache_file_as_backup_json,
                              remove_duplicate_dict_entries_by_key)
 from ..utils.llm_utils import BaseLLM
 
-logger = logging.get_logger(__name__)
+logger = logging.getLogger(__name__)
 VALID_CATEGORIES_COCO = ["object", "attribute"]
 
 

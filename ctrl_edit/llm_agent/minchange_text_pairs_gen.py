@@ -34,7 +34,7 @@ from ..utils.helpers import load_coco_captions, load_vsr_captions
 from ..utils.llm_utils import (DiffEditLLM, EditsGenLLM, GroundedLLM,
                                InstructPix2PixLLM)
 
-logger = logging.get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 random.seed(42)
