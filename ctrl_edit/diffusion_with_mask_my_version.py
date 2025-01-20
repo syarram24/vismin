@@ -12,8 +12,8 @@ import cv2
 import numpy as np
 import PIL
 import torch
-#from diffusers import AutoPipelineForInpainting, StableDiffusionInpaintPipeline
-from diffusers import FluxFillPipeline
+from diffusers import AutoPipelineForInpainting, StableDiffusionInpaintPipeline
+# from diffusers import FluxFillPipeline
 from groundingdino.models import build_model
 from groundingdino.util.inference import (annotate, load_image, load_model,
                                           predict)
@@ -185,22 +185,22 @@ class MaskedInpainter:
         self.load_komos2_model_processor()
 
     def load_diffusion_model(self):
-        self.pipe = FluxFillPipeline.from_pretrained("black-forest-labs/FLUX.1-Fill-dev", torch_dtype=torch.bfloat16)#.to("cuda")
-        # if self.diffusion_model_name == "sd2":
-        #     self.pipe = StableDiffusionInpaintPipeline.from_pretrained(
-        #         "stabilityai/stable-diffusion-2-inpainting",
-        #         torch_dtype=torch.float16,
-        #         variant="fp16",
-        #     )
-        # elif self.diffusion_model_name == "sdxl":
-        #     self.pipe = AutoPipelineForInpainting.from_pretrained(
-        #         "diffusers/stable-diffusion-xl-1.0-inpainting-0.1",
-        #         torch_dtype=torch.float16,
-        #         variant="fp16",
-        #     )
-        #     # Check if PyTorch version is 2.x
-        #     if int(torch.__version__.split(".")[0]) >= 2:
-        #         self.pipe.unet = torch.compile(self.pipe.unet, mode="reduce-overhead", fullgraph=True)
+        #self.pipe = FluxFillPipeline.from_pretrained("black-forest-labs/FLUX.1-Fill-dev", torch_dtype=torch.bfloat16)#.to("cuda")
+        if self.diffusion_model_name == "sd2":
+            self.pipe = StableDiffusionInpaintPipeline.from_pretrained(
+                "stabilityai/stable-diffusion-2-inpainting",
+                torch_dtype=torch.float16,
+                variant="fp16",
+            )
+        elif self.diffusion_model_name == "sdxl":
+            self.pipe = AutoPipelineForInpainting.from_pretrained(
+                "diffusers/stable-diffusion-xl-1.0-inpainting-0.1",
+                torch_dtype=torch.float16,
+                variant="fp16",
+            )
+            # Check if PyTorch version is 2.x
+            if int(torch.__version__.split(".")[0]) >= 2:
+                self.pipe.unet = torch.compile(self.pipe.unet, mode="reduce-overhead", fullgraph=True)
 
         self.pipe.to(device)
 
