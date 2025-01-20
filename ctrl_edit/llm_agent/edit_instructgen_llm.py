@@ -13,8 +13,18 @@ import Levenshtein
 import spacy
 from tqdm import tqdm
 
-from commons.constants import SYNTH_ONLY_CATEGORIES, VALID_SPATIAL_DIRECTIONS
-from commons.logger import Logger
+# from commons.constants import SYNTH_ONLY_CATEGORIES, VALID_SPATIAL_DIRECTIONS
+SYNTH_ONLY_CATEGORIES = ["relation", "counting"]
+VALID_SPATIAL_DIRECTIONS = ["left", "right", "top", "bottom", "below", "above", "under"]
+
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
 from evals.vlm.openai_client import OpenAIGPT
 
 from ..utils.helpers import (copy_current_cache_file_as_backup_json,
@@ -22,7 +32,7 @@ from ..utils.helpers import (copy_current_cache_file_as_backup_json,
                              remove_duplicate_dict_entries_by_key)
 from ..utils.llm_utils import BaseLLM
 
-logger = Logger.get_logger(__name__)
+logger = logging.get_logger(__name__)
 VALID_CATEGORIES_COCO = ["object", "attribute"]
 
 
