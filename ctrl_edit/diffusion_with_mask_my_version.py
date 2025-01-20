@@ -633,21 +633,24 @@ class ImageEditProcessor:
 
         # ds = load_dataset("/mnt/localssd/vismin")
         # print(ds)
-    # import json
-    # from tqdm import tqdm
-    # coco_original_data = {}
-    # edited_object_data = {}
-    # for id_ in tqdm(range(len(ds['train']))):
-    #     sample = ds['train'][id_]
-    #     #print(sample)
-    #     filtered_sample = {
-    #         key: value for key, value in sample.items() 
-    #         if 'image' not in key.lower()  # Case-insensitive check for 'image' in key
-    #     }
-    #     if sample['category'] == '':
-    #         coco_original_data[sample['image_id']] = filtered_sample
-    #     elif sample['category'] == 'object':
-    #         edited_object_data[sample['source_image_id']] = filtered_sample
+        # import json
+        # from tqdm import tqdm
+        # coco_original_data = {}
+        # edited_object_data = {}
+        # for id_ in tqdm(range(len(ds['train']))):
+        #     sample = ds['train'][id_]
+        #     #print(sample)
+        #     filtered_sample = {
+        #         key: value for key, value in sample.items() 
+        #         if key.lower() != 'image'  # Case-insensitive check for 'image' in key
+        #     }
+        #     if sample['category'] == '':
+        #         coco_original_data[sample['image_id']] = filtered_sample
+        #     elif sample['category'] == 'object':
+        #         edited_object_data[sample['source_image_id']] = filtered_sample
+
+
+    
             
         
     # with open('/mnt/localssd/coco_original_data.json', 'w', encoding='utf-8') as f:
