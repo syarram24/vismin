@@ -100,8 +100,8 @@ def generate_grounding(dino_model, image, text_prompt, box_threshold=0.35, text_
     boxes_area_tensor = boxes_area
     mask = boxes_area_tensor < 0.85
     indices = np.where(mask)[0].tolist()
-    boxes_xyxy = boxes_xyxy[mask]  # making sure boxes is a tensor
-    phrases = [phrases[i] for i in indices]
+    #boxes_xyxy = boxes_xyxy[mask]  # making sure boxes is a tensor
+    #phrases = [phrases[i] for i in indices]
 
     logger.info(f"no of boxes (post-filtering): {len(boxes_xyxy)}, phrases: {phrases}, boxes: {boxes_xyxy}")
     return boxes_xyxy, phrases
@@ -161,8 +161,8 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
         except Exception as e:
             logger.error(f"Error in generate_grounding: {e}")
 
-        if boxes is None or boxes.shape[0] == 0:
-            continue
+        # if boxes is None or boxes.shape[0] == 0:
+        #     continue
 
         mask_image = generate_masks_with_grounding(input_image, boxes)
         image_data_list.append(
