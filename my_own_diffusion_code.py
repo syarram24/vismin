@@ -177,24 +177,26 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
         print(f'mask_image: {mask_image.size}')
         # Ensure both images are same size
         input_size = input_image.size
-        print(f'input_size: {input_size}')
-        #mask_image = mask_image.resize(input_size)
-        print(f'--> mask_image: {mask_image.size}')
+        print(f'input_size {input_size}')
+        # Create a new image combining input and mask side by side
+        combined_width = input_size[0] * 2  # Double the width to fit both images
+        combined_height = input_size[1]
+        combined_image = Image.new('RGB', (combined_width, combined_height))
         
-        # Get dimensions from input image
-        height, width = input_image.shape[:2]  # Get dimensions from numpy array
-
-        # Create new image with double width to hold both images
-        combined_image = Image.new('RGB', (width * 2, height))
-
-        # Paste input image and mask side by side
+        # Paste input image on left side
         combined_image.paste(input_image, (0, 0))
-        combined_image.paste(mask_image, (width, 0))
-
+        
+        # Paste mask image on right side
+        combined_image.paste(mask_image, (input_size[0], 0))
+        
+        # Create output directory if it doesn't exist
+        os.makedirs(output_dir, exist_ok=True)
+        
         # Save combined image
-        output_path = os.path.join(output_dir_root, f"input_and_mask_{image_id}.png")
+        output_path = os.path.join(output_dir, f"input_and_mask_combined.png")
         combined_image.save(output_path)
-        logger.info(f"Saved combined input and mask image to {output_path}")
+        logger.info(f"Saved combined input and mask image to: {output_path}")
+
 
 
     input_image = Image.fromarray(input_image) if isinstance(input_image, np.ndarray) else input_image
