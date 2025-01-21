@@ -405,7 +405,7 @@ for idx, source_image_id in tqdm(enumerate(sorted(edited_object_data.keys())), d
         logger.info(f"Original: {caption_text}, Edited: {edits_info}")
 
         edited_image_list = image_diffusion_edit_and_rank(image_id, image_path, caption_text, [edits_info], device)
-        break
+        #break
 
 
 # import torch
