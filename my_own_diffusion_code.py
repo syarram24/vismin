@@ -248,6 +248,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
     batch_size = 1
     for i in range(0, len(image_data_list), batch_size):
         batch_data = image_data_list[i : i + batch_size]
+        unresized_input_images = [input_image for _ in batch_data]
         input_images = [input_image.resize((1024, 1024)) for _ in batch_data]
         mask_images = [data["mask_image"].resize((1024, 1024)) for data in batch_data]
 
@@ -300,7 +301,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
                 # Create output directory path using image_id
                 #output_dir = get_output_dir_path_by_image_id(output_dir_root, image_id)
                 
-                input_img = input_images[idx]
+                input_img = unresized_input_images[idx]
                 # Generate unique filename with timestamp
                 timestamp = int(time.time() * 1000)
                 output_filename = f"generated_{prompts[idx]}_{idx}.png"
