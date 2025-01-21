@@ -307,6 +307,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
                 output_path = os.path.join(output_dir, output_filename)
                 
                 try:
+                    print(f'input_img {input_img.size} img {img.size}')
                     # Save the image
                     img = img.resize((input_img.size[0], input_img.size[1]))
                     img.save(output_path)
