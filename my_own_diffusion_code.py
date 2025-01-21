@@ -300,6 +300,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
                 # Create output directory path using image_id
                 #output_dir = get_output_dir_path_by_image_id(output_dir_root, image_id)
                 
+                input_img = input_images[idx]
                 # Generate unique filename with timestamp
                 timestamp = int(time.time() * 1000)
                 output_filename = f"generated_{prompts[idx]}_{idx}.png"
@@ -307,6 +308,7 @@ def image_diffusion_edit_and_rank( image_id: str, image_path: str, input_caption
                 
                 try:
                     # Save the image
+                    img = img.resize((input_img.size[0], input_img.size[1]))
                     img.save(output_path)
                     logger.info(f"Saved generated image to {output_path}")
                 except Exception as e:
@@ -405,7 +407,7 @@ for idx, source_image_id in tqdm(enumerate(sorted(edited_object_data.keys())), d
         logger.info(f"Original: {caption_text}, Edited: {edits_info}")
 
         edited_image_list = image_diffusion_edit_and_rank(image_id, image_path, caption_text, [edits_info], device)
-        #break
+        break
 
 
 # import torch
